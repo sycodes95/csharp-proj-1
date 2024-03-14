@@ -71,13 +71,13 @@ namespace api.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<decimal>("LastDiv")
-                        .HasColumnType("dicemail(18,2)");
+                        .HasColumnType("decimal(18,2)");
 
                     b.Property<long>("MarketCap")
                         .HasColumnType("bigint");
 
                     b.Property<decimal>("Purchase")
-                        .HasColumnType("dicemail(18,2)");
+                        .HasColumnType("decimal(18,2)");
 
                     b.Property<string>("Symbol")
                         .IsRequired()
