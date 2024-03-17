@@ -21,6 +21,6 @@ namespace api.Dtos.Comment
 
     public long MarketCap { get; set; }
 
-    public List<CommentDto> Comments { get; set; }
+    public List<CommentDto> Comments { get; set; } = new List<CommentDto>();
   }
 }
