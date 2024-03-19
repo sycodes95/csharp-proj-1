@@ -140,3 +140,5 @@ C:\Users\sycod\source\repos\csharp-proj-1\api\bin\Debug\net8.0\Microsoft.AspNetC
 C:\Users\sycod\source\repos\csharp-proj-1\api\bin\Debug\net8.0\Microsoft.AspNetCore.Mvc.NewtonsoftJson.dll
 C:\Users\sycod\source\repos\csharp-proj-1\api\bin\Debug\net8.0\Newtonsoft.Json.dll
 C:\Users\sycod\source\repos\csharp-proj-1\api\bin\Debug\net8.0\Newtonsoft.Json.Bson.dll
+C:\Users\sycod\source\repos\csharp-proj-1\api\bin\Debug\net8.0\Microsoft.AspNetCore.Authentication.JwtBearer.dll
+C:\Users\sycod\source\repos\csharp-proj-1\api\bin\Debug\net8.0\Microsoft.AspNetCore.Identity.EntityFrameworkCore.dll

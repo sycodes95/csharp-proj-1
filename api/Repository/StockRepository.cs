@@ -65,12 +65,14 @@ namespace api.Repository
             if(!string.IsNullOrWhiteSpace(query.SortBy))
 			{
 				if(query.SortBy.Equals("Symbol", StringComparison.OrdinalIgnoreCase))
-                {
-                    stocks = query.IsDescending ? stocks.OrderByDescending(s => s.Symbol) : stocks.OrderBy(s => s.Symbol);
-                }
+				{
+					stocks = query.IsDescending ? stocks.OrderByDescending(s => s.Symbol) : stocks.OrderBy(s => s.Symbol);
+				}
 			}
 
-			return await stocks.ToListAsync();
+            var skipNumber = (query.PageNumber - 1) * query.PageSize;
+
+			return await stocks.Skip(skipNumber).Take(query.PageSize).ToListAsync();
 		}
 
 		
