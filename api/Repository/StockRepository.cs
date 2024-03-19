@@ -18,14 +18,14 @@ namespace api.Repository
 
 		public StockRepository(ApplicationDBContext context)
 		{
-		_context = context;
+		    _context = context;
 		}
 		
 		public async Task<Stock> CreateAsync(Stock stockModel)
 		{
-		await _context.Stocks.AddAsync(stockModel);
-		await _context.SaveChangesAsync();
-		return stockModel;
+            await _context.Stocks.AddAsync(stockModel);
+            await _context.SaveChangesAsync();
+            return stockModel;
 		}
 
 		public async Task<Stock?> DeleteAsync(int id)
@@ -60,6 +60,14 @@ namespace api.Repository
 			if(!string.IsNullOrWhiteSpace(query.Symbol))
 			{
 				stocks = stocks.Where(s => s.Symbol.Contains(query.Symbol));
+			}
+
+            if(!string.IsNullOrWhiteSpace(query.SortBy))
+			{
+				if(query.SortBy.Equals("Symbol", StringComparison.OrdinalIgnoreCase))
+                {
+                    stocks = query.IsDescending ? stocks.OrderByDescending(s => s.Symbol) : stocks.OrderBy(s => s.Symbol);
+                }
 			}
 
 			return await stocks.ToListAsync();
