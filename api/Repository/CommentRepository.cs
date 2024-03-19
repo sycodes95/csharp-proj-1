@@ -27,7 +27,7 @@ namespace api.Repository
             return commentModel;
         }
 
-        public async Task<Comment?> UpdateAsync(int id, CommentDto commentDto)
+        public async Task<Comment?> UpdateAsync(int id, UpdateCommentRequestDto commentDto)
         {
             var comment = await _context.Comments.FirstOrDefaultAsync(x => x.Id == id);
             if(comment == null) return null;
@@ -65,6 +65,6 @@ namespace api.Repository
             return comment;
         }
 
-        
+       
     }
 }
