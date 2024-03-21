@@ -3,7 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using api.Data;
+using api.Dtos.Portfolio;
 using api.Interfaces;
+using api.Mappers;
 using api.Models;
 using Microsoft.EntityFrameworkCore;
 
@@ -30,6 +32,30 @@ namespace api.Repository
                 Industry = stock.Stock.Industry,
                 MarketCap = stock.Stock.MarketCap,
             }).ToListAsync();
+        }
+
+        public async Task<Portfolio> AddPortfolio(string AppUserId, int StockId)
+        {   
+
+            var portfolio = new Portfolio
+            {
+                AppUserId = AppUserId,
+                StockId = StockId,
+            };
+            await _context.Portfolios.AddAsync(portfolio);
+            await _context.SaveChangesAsync();
+            return portfolio;
+        }
+
+        public async Task<Portfolio?> DeletePortfolio(string AppUserId, int StockId)
+        {   
+            var portfolio = await _context.Portfolios.FirstOrDefaultAsync(x => x.StockId == StockId && x.AppUserId == AppUserId);
+
+            if(portfolio == null) return null;
+
+            _context.Portfolios.Remove(portfolio);
+            await _context.SaveChangesAsync();
+            return portfolio;
         }
     }
 }

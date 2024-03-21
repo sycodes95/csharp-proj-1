@@ -23,9 +23,9 @@ namespace api.Repository
 		
 		public async Task<Stock> CreateAsync(Stock stockModel)
 		{
-            await _context.Stocks.AddAsync(stockModel);
-            await _context.SaveChangesAsync();
-            return stockModel;
+			await _context.Stocks.AddAsync(stockModel);
+			await _context.SaveChangesAsync();
+			return stockModel;
 		}
 
 		public async Task<Stock?> DeleteAsync(int id)
@@ -103,5 +103,15 @@ namespace api.Repository
 		{
 			return await _context.Stocks.AnyAsync(s => s.Id == id);
 		}
+
+        public async Task<Stock?> GetBySymbolAsync(string symbol)
+        {
+            var stock = await _context.Stocks.FirstOrDefaultAsync(x => x.Symbol == symbol);
+
+            if(stock == null) return null;
+
+            return stock;
+            
+        }
 	}
 }
