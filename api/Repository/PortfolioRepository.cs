@@ -36,7 +36,7 @@ namespace api.Repository
 
         public async Task<Portfolio> AddPortfolio(string AppUserId, int StockId)
         {   
-
+            
             var portfolio = new Portfolio
             {
                 AppUserId = AppUserId,
@@ -45,7 +45,7 @@ namespace api.Repository
             await _context.Portfolios.AddAsync(portfolio);
             await _context.SaveChangesAsync();
             return portfolio;
-        }
+        }   
 
         public async Task<Portfolio?> DeletePortfolio(string AppUserId, int StockId)
         {   
