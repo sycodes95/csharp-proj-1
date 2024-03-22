@@ -19,13 +19,14 @@ namespace api.Controllers
         private readonly UserManager<AppUser> _userManager;
         private readonly IStockRepository _stockRepo;
         private readonly IPortfolioRepository _portfolioRepo;
+        private readonly IFMPService _fmpService;
 
-
-        public PortfolioController(UserManager<AppUser> userManager, IStockRepository stockRepo, IPortfolioRepository portfolioRepo)
+        public PortfolioController(UserManager<AppUser> userManager, IStockRepository stockRepo, IPortfolioRepository portfolioRepo, IFMPService fmpService)
         {
             _userManager = userManager;
             _stockRepo = stockRepo;
             _portfolioRepo = portfolioRepo;
+            _fmpService = fmpService;
         }
 
         [HttpGet]
@@ -39,7 +40,7 @@ namespace api.Controllers
         }
 
         [HttpPost]
-        [Authorize]
+        // [Authorize]
         public async Task<IActionResult> AddPortfolio([FromBody] string symbol)
         {
             // var createdPortfolio = await _portfolioRepo.Create(portfolioDto);
@@ -49,20 +50,39 @@ namespace api.Controllers
             var appUser = await _userManager.FindByNameAsync(username);
             var stock = await _stockRepo.GetBySymbolAsync(symbol);
 
+            if(stock == null)
+            {
+                stock = await _fmpService.FindStockBySymbolAsync(symbol);
+                if(stock == null) {
+                    return BadRequest("Stock does not exist");
+                } else {
+                    await _stockRepo.CreateAsync(stock);
+                }
+                
+            } 
+
             if(stock == null) return BadRequest("Stock not found");
 
             var userPortfolio = await _portfolioRepo.GetUserPortfolio(appUser);
 
             if(userPortfolio.Any(e => e.Symbol.ToLower() == symbol.ToLower())) return BadRequest("Cannot add duplicate stock to portfolio");
-            var portfolio = await _portfolioRepo.AddPortfolio(appUser.Id, stock.Id);
 
-            if(portfolio == null)
+            var portfolioModel = new Portfolio
+            {
+                StockId = stock.Id,
+                AppUserId = appUser.Id
+            };
+
+            await _portfolioRepo.CreateAsync(portfolioModel);
+
+            if (portfolioModel == null)
             {
                 return StatusCode(500, "Could not create");
             }
-
-            
-            return Ok(portfolio);
+            else
+            {
+                return Ok(stock);
+            }
         }
 
         [HttpDelete]

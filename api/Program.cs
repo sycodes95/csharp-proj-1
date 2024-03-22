@@ -13,8 +13,13 @@ var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
+
+// builder.Services.AddControllers(); It enables the framework to discover and activate controller classes as part of the application's request handling pipeline. Controllers are classes that handle incoming HTTP requests and return responses. Without this service registration, the application wouldn't know how to handle requests mapped to controllers.
 builder.Services.AddControllers();
+
+//In essence, AddEndpointsApiExplorer() sets the foundation for automatic API documentation generation and exploration capabilities in an ASP.NET Core application, making it a key part of developing, documenting, and testing APIs.
 builder.Services.AddEndpointsApiExplorer();
+
 builder.Services.AddSwaggerGen();
 
 builder.Services.AddSwaggerGen(option =>
@@ -45,14 +50,18 @@ builder.Services.AddSwaggerGen(option =>
     });
 });
 
+//Overall, this configuration is essential for applications that use complex object relationships and need to ensure their APIs can serialize data into JSON without errors caused by reference loops. It makes Newtonsoft.Json the default serializer for the application and configures it to gracefully handle one of the common pitfalls in JSON serialization.
 builder.Services.AddControllers().AddNewtonsoftJson(options => {
     options.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore;
 });
 
+//Connects to MSSQL DB
 builder.Services.AddDbContext<ApplicationDBContext>(options => {
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"));
 });
 
+
+// The builder.Services.AddIdentity<AppUser, IdentityRole>(options => { ... }) line of code is configuring ASP.NET Core Identity in an application, specifying how the system should handle user authentication and authorization. ASP.NET Core Identity is a membership system that adds login functionality to ASP.NET Core apps, allowing for user registration, login, and management.AddEntityFrameworkStores<ApplicationDBContext>(): This method call tells ASP.NET Core Identity to use Entity Framework Core as its persistence mechanism, with ApplicationDBContext as the database context. ApplicationDBContext should extend IdentityDbContext and is responsible for connecting to the database and mapping Identity classes (such as users and roles) to database tables. By using Entity Framework Core, ASP.NET Core Identity can automatically create and manage the necessary database schema for storing user and role information.
 builder.Services.AddIdentity<AppUser, IdentityRole>(options => {
     options.Password.RequireDigit = true;
     options.Password.RequireLowercase = true;
@@ -81,8 +90,6 @@ builder.Services.AddAuthentication(options => {
         IssuerSigningKey = new SymmetricSecurityKey(
             System.Text.Encoding.UTF8.GetBytes(builder.Configuration["JWT:SigningKey"])
         )
-
-
     };
 });
 
@@ -90,6 +97,8 @@ builder.Services.AddScoped<IStockRepository, StockRepository>();
 builder.Services.AddScoped<ICommentRepository, CommentRepository>();
 builder.Services.AddScoped<ITokenService, TokenService>();
 builder.Services.AddScoped<IPortfolioRepository, PortfolioRepository>();
+builder.Services.AddScoped<IFMPService, FMPService>();
+builder.Services.AddHttpClient<IFMPService, FMPService>();
 
 
 var app = builder.Build(); 
@@ -102,6 +111,15 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
+
+app.UseCors(x => x
+.AllowAnyMethod()
+.AllowAnyHeader()
+.AllowCredentials()
+//When deploying 
+.WithOrigins("https://localhost:3000")
+.SetIsOriginAllowed(origin => true)
+);
 app.UseAuthentication();
 app.UseAuthorization();
 app.MapControllers();

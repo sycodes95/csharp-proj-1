@@ -24,7 +24,7 @@ namespace api.Controllers
 			_stockRepo = stockRepo;
 		}
 		
-		[HttpGet]
+        [HttpGet]
         [Authorize]
 		public async Task<IActionResult> GetAll([FromQuery] QueryObject query) {
 			
@@ -48,7 +48,7 @@ namespace api.Controllers
 		}
 
 		[HttpPost]
-			public async Task<IActionResult> Create([FromBody] CreateStockRequestDto stockDto) {
+		public async Task<IActionResult> Create([FromBody] CreateStockRequestDto stockDto) {
 
 			var stockModel = stockDto.ToStockFromCreateDTO();
 

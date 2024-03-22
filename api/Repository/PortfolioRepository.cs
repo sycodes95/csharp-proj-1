@@ -34,18 +34,12 @@ namespace api.Repository
             }).ToListAsync();
         }
 
-        public async Task<Portfolio> AddPortfolio(string AppUserId, int StockId)
-        {   
-            
-            var portfolio = new Portfolio
-            {
-                AppUserId = AppUserId,
-                StockId = StockId,
-            };
+        public async Task<Portfolio> CreateAsync(Portfolio portfolio)
+        {
             await _context.Portfolios.AddAsync(portfolio);
             await _context.SaveChangesAsync();
             return portfolio;
-        }   
+        }
 
         public async Task<Portfolio?> DeletePortfolio(string AppUserId, int StockId)
         {   

@@ -11,7 +11,7 @@ namespace api.Interfaces
     {
         Task<List<Stock>> GetUserPortfolio(AppUser user);
 
-        Task<Portfolio> AddPortfolio(string AppUserId, int StockId);
+        Task<Portfolio> CreateAsync(Portfolio portfolio);
 
         Task<Portfolio?> DeletePortfolio(string AppUserId, int StockId);
 
